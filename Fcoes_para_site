@@ -29,3 +29,44 @@ Usa "axios as a HTTP library"
 axios = require('axios')
 
 
+//criar lightpole
+lat=''
+lon=''
+
+data='{
+  "data": {
+    "description": "A light pole",
+    "capabilities": [
+      "lightpole_monitoring",
+    ],
+    "status": "active",
+    "lat":'+lat+',
+    "lon":'+lon+'
+  }
+}'
+
+axios.post('http://143.107.45.126:30134/adaptor/resources'+data)
+     .then((response) => console.log(response.data))
+     .catch((err) => console.log(error))
+
+//Pegar os ids de tds os Lightpoles
+
+
+axios.get('http://143.107.45.126:30134/discovery/resources?capability=lightpole_monitoring')
+     .then((response) => console.log(response.data))
+     .catch((err) => console.log(error))
+
+
+
+//pegar um lightpole, dado o ID
+
+
+uuid=''
+
+
+axios.get('http://143.107.45.126:30134/collector/resources/' + uuid + '/data')
+     .then((response) => console.log(response.data))
+     .catch((err) => console.log(error))
+
+
+
