@@ -1,0 +1,31 @@
+/* Funçoes do interScity para implementar no site
+
+Para o Agente/Gerente/Prefeitura:
+
+-Criar Lightpole(id,lat,long,active) = Post /catalog/resources
+
+-Pegar todos os Lightpoles, ids, localizações, atividade e suas correntes=
+1°: pegar os ids= GET /catalog/resources/search; usar capability
+2°: GET /catalog/resources/{uuid}
+
+-Pegar histórico de um LightPole= Post /collector/resources/{uuid}/data
+
+
+Para o Cliente/usuario/cidadao:
+
+-Pegar todos os Lightpoles, ids, localizações e suas correntes=
+1°: pegar os ids= GET /catalog/resources/search; usar capability lightpole_monitoring p pegar ids
+2°: GET /catalog/resources/{uuid}
+
+-Pegar histórico de um LightPole= Post /collector/resources/{uuid}/data
+
+Para o Gateway:
+-Detectar e atualizar um poste inativo = PUT /catalog/resources/{uuid}
+
+Usa "axios as a HTTP library"
+*/
+
+
+axios = require('axios')
+
+
