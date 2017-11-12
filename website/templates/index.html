@@ -76,7 +76,78 @@
 
       <div class="container">
 
-        <div class="row">
+        <div class="startContent">
+          <div class="row" id="startContent">
+            <div class="col s12 l12">
+              <div class="card white z-depth-0">
+                <div class="card-content white-text">
+                  <h1 class="center indigo-text text-accent-4">SancaLights</b></h1>
+                  <div class="card-action indigo accent-4">
+                    <h5 class="center white-text"><b>Monitore</b> a <b>iluminação pública</b> em <b>tempo real</b></h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col s12 l12">
+              <div class="card white z-depth-0">
+                <div class="card-content white-text">
+                  <div class="center-align">
+                    <a id="mainContentButton" class="waves-effect waves-light btn-large pulse indigo accent-4 ">
+                      <i class="material-icons" style="font-size:36px">lightbulb_outline</i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col s12 l12">
+
+              <div class="row">
+
+                  <div class="col s12 l4 offset-l1">
+
+
+                        <div class="card z-depth-0">
+                          <div class="card-image center indigo accent-4">
+                            <i class="material-icons" style="color:white;font-size:100px">attach_money</i>
+                          </div>
+                          <div class="card-content center">
+                            <h4 class="card-title indigo-text text-accent-4"><b>Economia</b></h4>
+                          </div>
+                          <div class="card-action indigo-text text-accent-4">
+                            <span>Com sensores captando o consumo de energia elétrica de cada poste de iluminação pública em tempo real, a taxa CIP será calculada de maneira mais justa, gerando contas de energia elétrica mais baratas para toda a população.</span>
+                          </div>
+                        </div>
+
+
+                  </div>
+
+                  <div class="col s12 l4 offset-l2">
+
+                    <div class="card z-depth-0">
+                      <div class="card-image center indigo accent-4">
+                        <i class="material-icons" style="color:white;font-size:100px">build</i>
+                      </div>
+                      <div class="card-content center">
+                        <h4 class="card-title indigo-text text-accent-4"><b>Manutenção</b></h4>
+                      </div>
+                      <div class="card-action indigo-text text-accent-4">
+                        <span>O monitoramento em tempo real agilizará todo o processo de manutenção dos postes de iluminação pública, uma vez que os gestores não só saberão em tempo real os postes com defeito mas também a sua localização exata.</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="row" id="mainContent" style="visibility:hidden">
 
           <div class="col s12 l4">
             <div class="card z-depth-0">
@@ -186,7 +257,7 @@
 
                         var image = {
 
-                          url: 'https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightbulb-on.png'
+                          url: 'https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/dummy.png'
                         };
 
                         var lightPole;
@@ -297,6 +368,45 @@
                           });
                         });
 
+                        $.ajax({
+                          url: 'http://143.107.45.126:30134/collector/resources/' + marker_1.id + '/data',
+                          method: 'POST',
+                          dataType: 'json',
+                          data: '{"capabilities":["lightpole_monitoring"]}',
+                          success: function(resources){
+
+                            var last = resources.resources["0"].capabilities.lightpole_monitoring.length - 1;
+                            if(resources.resources["0"].capabilities.lightpole_monitoring[last.toString()].current == 0){
+
+                              marker_1.setIcon('https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightPole_off.png');
+                            }
+                            else{
+
+                              marker_1.setIcon('https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightbulb-on.png');
+                            }
+                          }
+                        });
+
+                        $.ajax({
+                          url: 'http://143.107.45.126:30134/collector/resources/' + marker_2.id + '/data',
+                          method: 'POST',
+                          dataType: 'json',
+                          data: '{"capabilities":["lightpole_monitoring"]}',
+                          success: function(resources){
+
+                            var last = resources.resources["0"].capabilities.lightpole_monitoring.length - 1;
+                            if(resources.resources["0"].capabilities.lightpole_monitoring[last.toString()].current == 0){
+
+                              marker_2.setIcon('https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightPole_off.png');
+                            }
+                            else{
+
+                              marker_2.setIcon('https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightbulb-on.png');
+                            }
+                          }
+                        });
+
+
 
                         setInterval(function(){
 
@@ -338,13 +448,14 @@
                             }
                           });
 
-                        }, 5000);
+                        }, 1000);
 
                       }
 
                     </script>
 
                   </li>
+
                 </ul>
               </div>
             </div>
@@ -363,8 +474,8 @@
 						<h5 class="white-text">Saiba mais</h5>
 						<ul>
 							<li><a class="grey-text text-lighten-3" target="_blank" href="http://www.saocarlos.usp.br/"><b>Universidade de São Paulo</a></b></li>
-							<li><a class="grey-text text-lighten-3" target="_blank" href="http://www.eesc.usp.br/"><b>Escola de Engenharia de São Carlos</a></b></li>
-              <li><a class="grey-text text-lighten-3" target="_blank" href="https://www.facebook.com/events/1470285529726566/" target="_blank"><b>HackathonUSP | Smart Cities</b></a></li>
+              <li><a class="grey-text text-lighten-3" target="_blank" href="https://www.facebook.com/events/1470285529726566/"><b>HackathonUSP | Smart Cities</b></a></li>
+							<li><a class="grey-text text-lighten-3" target="_blank" href="http://interscity.org/"><b>Interscity</a></b></li>
 						</ul>
 					</div>
 					<div class="col l6 s12">
@@ -386,7 +497,6 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBX3MBSmiNiYefSfSrA1muXZOLii8JJWQQ&callback=initMap" async defer></script>
   </body>
 
-
   <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
 
@@ -404,6 +514,14 @@
         menuWidth: 300,
         draggable: true,
         closeOnClick: false
+      });
+
+      //alert("Ao clicar em um poste, habilite os scripts em sua barra de navegação para correta integração com a platafroma do Interscity!")
+
+      $('#mainContentButton').click(function(){
+
+        $('#startContent').hide();
+        $('#mainContent').css("visibility","visible");
       });
 
       $('#gestor').click(function(){
