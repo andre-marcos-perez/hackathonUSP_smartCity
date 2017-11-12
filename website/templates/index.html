@@ -20,8 +20,6 @@
         flex: 1 0 auto;
       }
 
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
       #map {
         height: 60%;
       }
@@ -29,12 +27,7 @@
       #data {
         height: 60%;
       }
-      /* Optional: Makes the sample page fill the window.
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;*/
-      }
+
     </style>
 
 
@@ -51,11 +44,9 @@
             <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down">
               <li><div class="divider"></div></li>
-              <li><a href="#!"><b>Gestão</b></a></li>
+              <li><a href="#" id="gestor"><b>Gestor</b></a></li>
               <li><div class="divider"></div></li>
-              <li><a href="#!"><b>Sistema</b></a></li>
-              <li><div class="divider"></div></li>
-              <li><a href="#!"><b>Documentos</b></a></li>
+              <li><a href="#" id="cidadao"><b>Cidadão</b></a></li>
               <li><div class="divider"></div></li>
             </ul>
           </div>
@@ -74,11 +65,9 @@
           </div>
         </li>
         <li><div class="divider"></div></li>
-        <li><a href="#!"><b>Gestão</b></a></li>
+        <li><a href="#" id="gestorMobile"><b>Gestor</b></a></li>
         <li><div class="divider"></div></li>
-        <li><a href="#!"><b>Sistema</b></a></li>
-        <li><div class="divider"></div></li>
-        <li><a href="#!"><b>Documentos</b></a></li>
+        <li><a href="#" id="cidadaoMobile"><b>Cidadão</b></a></li>
         <li><div class="divider"></div></li>
       </ul>
     </header>
@@ -95,7 +84,7 @@
                 <ul>
                   <li>
                     <div class="row">
-                      <div class="col s12">
+                      <div class="col s12 l12">
                         <div class="card indigo accent-4 z-depth-2">
                           <div class="card-content white-text">
                             <span class="card-title center"><b>Dashboard</b></span>
@@ -104,28 +93,49 @@
                       </div>
                     </div>
                   </li>
+
                   <li>
                     <div class="row">
-                      <div class="col s12">
+                      <div class="col s6 l12">
                         <div class="card white hoverable">
                           <div class="card-content">
-                            <b>Postes online: </b>
+                            <b>Energia (mês)</b><br><b>23 MWh</b>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col s6 l12">
+                        <div class="card white hoverable">
+                          <div class="card-content">
+                            <b>Valor (mês)</b><br><b>R$ 73.42 milhões</b>
                           </div>
                         </div>
                       </div>
                     </div>
                   </li>
-                  <li>
+
+                  <li id='gestorBotao' style="display:none">
                     <div class="row">
-                      <div class="col s12">
-                        <div class="card white hoverable">
-                          <div class="card-content">
-                            <b>Postes offline: </b>
+                      <a href="#">
+                        <div class="col s6 l12">
+                          <div class="card green hoverable">
+                            <div class="card-content white-text center">
+                              <b>Adicionar poste</b>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </a>
+                      <a href="#">
+                        <div class="col s6 l12">
+                          <div class="card red hoverable">
+                            <div class="card-content white-text center">
+                              <b>Remover poste</b>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
                     </div>
                   </li>
+
                 </ul>
               </div>
             </div>
@@ -394,6 +404,26 @@
         menuWidth: 300,
         draggable: true,
         closeOnClick: false
+      });
+
+      $('#gestor').click(function(){
+
+        $('#gestorBotao').show();
+      });
+
+      $('#cidadao').click(function(){
+
+        $('#gestorBotao').hide();
+      });
+
+      $('#gestorMobile').click(function(){
+
+        $('#gestorBotao').show();
+      });
+
+      $('#cidadaoMobile').click(function(){
+
+        $('#gestorBotao').hide();
       });
 
     });
