@@ -316,6 +316,21 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBX3MBSmiNiYefSfSrA1muXZOLii8JJWQQ&callback=initMap" async defer></script>
   </body>
 
+  <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyBX3MBSmiNiYefSfSrA1muXZOLii8JJWQQ",
+      authDomain: "sancalights.firebaseapp.com",
+      databaseURL: "https://sancalights.firebaseio.com",
+      projectId: "sancalights",
+      storageBucket: "sancalights.appspot.com",
+      messagingSenderId: "1007909740197"
+    };
+    firebase.initializeApp(config);
+</script>
+
+
   <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
 
@@ -334,6 +349,14 @@
         draggable: true,
         closeOnClick: false
       });
+
+      firebase.auth().signInAnonymously().catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // ...
+      });
+      
     });
 
   </script>

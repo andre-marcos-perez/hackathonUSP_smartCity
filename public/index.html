@@ -2,10 +2,37 @@
 
   <head>
 
+    <title>SL | Início </title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/favicon.png"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
-    <link rel="stylesheet" href="../static/css/index.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <style>
+
+      body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      main {
+        flex: 1 0 auto;
+      }
+
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 80%;
+      }
+      /* Optional: Makes the sample page fill the window.
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;*/
+      }
+    </style>
+
 
   </head>
 
@@ -22,7 +49,10 @@
               <li><div class="divider"></div></li>
               <li><a href="#!"><b>Gestão</b></a></li>
               <li><div class="divider"></div></li>
+              <li><a href="#!"><b>Sistema</b></a></li>
+              <li><div class="divider"></div></li>
               <li><a href="#!"><b>Documentos</b></a></li>
+              <li><div class="divider"></div></li>
             </ul>
           </div>
         </nav>
@@ -42,12 +72,216 @@
         <li><div class="divider"></div></li>
         <li><a href="#!"><b>Gestão</b></a></li>
         <li><div class="divider"></div></li>
+        <li><a href="#!"><b>Sistema</b></a></li>
+        <li><div class="divider"></div></li>
         <li><a href="#!"><b>Documentos</b></a></li>
         <li><div class="divider"></div></li>
       </ul>
     </header>
 
     <main>
+
+      <div class="container">
+
+        <div class="row">
+          <div class="col s12 l10 offset-l1">
+
+            <div class="card">
+              <div class="card-content">
+                <div id="map"></div>
+                <script>
+                  var map;
+                  function initMap() {
+
+                    map = new google.maps.Map(document.getElementById('map'), {
+                      center: {lat: -23.5599, lng: -46.7322},
+                      zoom: 19
+                    });
+
+                    setMarkers(map);
+                  }
+
+                  var lightPoles = [
+                    ['Poste 1', -23.559948, -46.732083, 1],
+                    ['Poste 2', -23.559896, -46.732390, 2],
+                  ];
+
+                  function setMarkers(map) {
+
+                    var infowindow;
+
+                    var image = {
+
+                      url: 'https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightbulb-on.png'
+                    };
+
+                    var lightPole;
+
+                    lightPole = lightPoles[0];
+                    var marker_1 = new google.maps.Marker({
+                      id: "ee5480f1-fe48-47ea-af13-b0ee2c5c9ac3",
+                      position: {lat: lightPole[1], lng: lightPole[2]},
+                      map: map,
+                      icon: image,
+                      title: lightPole[0],
+                      zIndex: lightPole[3]
+                    });
+
+                    marker_1.addListener('click', function() {
+
+                      $.ajax({
+                        url: 'http://143.107.45.126:30134/catalog/resources/' + marker_1.id,
+                        dataType: 'json',
+                        async: false,
+                        success: function(data) {
+
+                          $.ajax({
+                            url: 'http://143.107.45.126:30134/collector/resources/' + marker_1.id + '/data',
+                            method: 'POST',
+                            dataType: 'json',
+                            data: '{"capabilities":["lightpole_monitoring"]}',
+                            success: function(resources){
+
+                              console.log(data);
+                              console.log(resources);
+
+                              var date = new Date();
+                              var last = resources.resources["0"].capabilities.lightpole_monitoring.length - 1;
+
+                              var contentString = '<div class="card indigo accent-4">' +
+                              '<div class="card indigo accent-4"><div class="card-content white-text">' +
+                              '<span class="card-action"><ul>' +
+                              '<li><b>Poste: </b>' + data.data.id.toString() + '</li>' +
+                              '<li><b>Corrente: </b>' + resources.resources["0"].capabilities.lightpole_monitoring[last.toString()].current.toString() + '</li>' +
+                              '<li><div class="divider"></div></li>' +
+                              '<li><b>Data: </b>' + date.getDate().toString() + '/' + (date.getMonth()+1).toString() + '/' +  date.getFullYear().toString() + '</li>' +
+                              '<li><b>Hora: </b>' + date.getHours().toString() + ':' + date.getMinutes().toString() + ':' +  date.getSeconds().toString() + '</li>' +
+                              '<li><div class="divider"></div></li>' +
+                              '<li><b>Cidade: </b>' + data.data.city + '</li>' +
+                              '<li><b>Bairro: </b>' + data.data.neighborhood + '</li>' +
+                              '<li><b>CEP: </b>' + data.data.postal_code + '</li>' +
+                              '</ul></span></div></div>'
+
+                              infowindow = new google.maps.InfoWindow({
+                                content: contentString
+                              });
+
+                              infowindow.open(map, marker_1);
+
+                            }
+                          });
+                        }
+                      });
+                    });
+
+                    lightPole = lightPoles[1];
+                    var marker_2 = new google.maps.Marker({
+                      id: "ec3967d5-8483-4ce2-a880-3bec87835378",
+                      position: {lat: lightPole[1], lng: lightPole[2]},
+                      map: map,
+                      icon: image,
+                      title: lightPole[0],
+                      zIndex: lightPole[3]
+                    });
+                    marker_2.addListener('click', function() {
+
+                      $.ajax({
+                        url: 'http://143.107.45.126:30134/catalog/resources/' + marker_2.id,
+                        dataType: 'json',
+                        async: false,
+                        success: function(data) {
+
+                          $.ajax({
+                            url: 'http://143.107.45.126:30134/collector/resources/' + marker_2.id + '/data',
+                            method: 'POST',
+                            dataType: 'json',
+                            data: '{"capabilities":["lightpole_monitoring"]}',
+                            success: function(resources){
+
+                              console.log(data);
+                              console.log(resources);
+
+                              var date = new Date();
+                              var last = resources.resources["0"].capabilities.lightpole_monitoring.length - 1;
+
+                              var contentString = '<div class="card indigo accent-4">' +
+                              '<div class="card indigo accent-4"><div class="card-content white-text">' +
+                              '<span class="card-action"><ul>' +
+                              '<li><b>Poste: </b>' + data.data.id.toString() + '</li>' +
+                              '<li><b>Corrente: </b>' + resources.resources["0"].capabilities.lightpole_monitoring[last.toString()].current.toString() + '</li>' +
+                              '<li><div class="divider"></div></li>' +
+                              '<li><b>Data: </b>' + date.getDate().toString() + '/' + (date.getMonth()+1).toString() + '/' +  date.getFullYear().toString() + '</li>' +
+                              '<li><b>Hora: </b>' + date.getHours().toString() + ':' + date.getMinutes().toString() + ':' +  date.getSeconds().toString() + '</li>' +
+                              '<li><div class="divider"></div></li>' +
+                              '<li><b>Cidade: </b>' + data.data.city + '</li>' +
+                              '<li><b>Bairro: </b>' + data.data.neighborhood + '</li>' +
+                              '<li><b>CEP: </b>' + data.data.postal_code + '</li>' +
+                              '</ul></span></div></div>'
+                              infowindow = new google.maps.InfoWindow({
+                                content: contentString
+                              });
+
+                              infowindow.open(map, marker_2);
+
+                            }
+                          });
+                        }
+                      });
+                    });
+
+
+                    setInterval(function(){
+
+                      $.ajax({
+                        url: 'http://143.107.45.126:30134/collector/resources/' + marker_1.id + '/data',
+                        method: 'POST',
+                        dataType: 'json',
+                        data: '{"capabilities":["lightpole_monitoring"]}',
+                        success: function(resources){
+
+                          var last = resources.resources["0"].capabilities.lightpole_monitoring.length - 1;
+                          if(resources.resources["0"].capabilities.lightpole_monitoring[last.toString()].current == 0){
+
+                            marker_1.setIcon('https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightPole_off.png');
+                          }
+                          else{
+
+                            marker_1.setIcon('https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightbulb-on.png');
+                          }
+                        }
+                      });
+
+                      $.ajax({
+                        url: 'http://143.107.45.126:30134/collector/resources/' + marker_2.id + '/data',
+                        method: 'POST',
+                        dataType: 'json',
+                        data: '{"capabilities":["lightpole_monitoring"]}',
+                        success: function(resources){
+
+                          console.log("marker_2")
+                          var last = resources.resources["0"].capabilities.lightpole_monitoring.length - 1;
+                          if(resources.resources["0"].capabilities.lightpole_monitoring[last.toString()].current == 0){
+
+                            marker_2.setIcon('https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightPole_off.png');
+                          }
+                          else{
+
+                            marker_2.setIcon('https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightbulb-on.png');
+                          }
+                        }
+                      });
+
+                    }, 5000);
+
+                  }
+
+                </script>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
 
     </main>
 
@@ -79,10 +313,52 @@
 
     </footer>
 
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBX3MBSmiNiYefSfSrA1muXZOLii8JJWQQ&callback=initMap" async defer></script>
   </body>
+
+  <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyBX3MBSmiNiYefSfSrA1muXZOLii8JJWQQ",
+      authDomain: "sancalights.firebaseapp.com",
+      databaseURL: "https://sancalights.firebaseio.com",
+      projectId: "sancalights",
+      storageBucket: "sancalights.appspot.com",
+      messagingSenderId: "1007909740197"
+    };
+    firebase.initializeApp(config);
+</script>
+
 
   <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
-  <script type="text/javascript" src="../static/javascript/index.js"></script>
+
+  <script>
+
+    $(document).ready(function(){
+
+      $('.collapsible').collapsible({
+
+        closeOnClick: false
+      });
+
+      $(".button-collapse").sideNav({
+
+        menuWidth: 300,
+        draggable: true,
+        closeOnClick: false
+      });
+
+      firebase.auth().signInAnonymously().catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // ...
+      });
+      
+    });
+
+  </script>
 
 </html>
