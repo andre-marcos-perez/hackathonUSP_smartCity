@@ -3,17 +3,27 @@
   <head>
 
     <title>SL | Início </title>
-    <link rel="icon" type="image/png" href="../static/image/favicon.png"/>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/favicon.png"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
-    <link rel="stylesheet" href="../static/css/index.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <style>
+
+      body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      main {
+        flex: 1 0 auto;
+      }
+
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
-        height: 60%;
+        height: 80%;
       }
       /* Optional: Makes the sample page fill the window.
       html, body {
@@ -84,7 +94,7 @@
                   function initMap() {
 
                     map = new google.maps.Map(document.getElementById('map'), {
-                      center: {lat: -23.5599, lng: -46.7320},
+                      center: {lat: -23.5599, lng: -46.7322},
                       zoom: 19
                     });
 
@@ -101,10 +111,8 @@
                     var infowindow;
 
                     var image = {
-                      url: 'https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightPole_on.png',
-                      //size: new google.maps.Size(50, 50),
-                      //origin: new google.maps.Point(0, 0),
-                      //anchor: new google.maps.Point(0, 32)
+
+                      url: 'https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightbulb-on.png'
                     };
 
                     var lightPole;
@@ -138,12 +146,13 @@
                               console.log(resources);
 
                               var date = new Date();
-                              var contentString = '<div class="card indigo accent-4">' +
+                              var last = resources.resources["0"].capabilities.lightpole_monitoring.length - 1;
 
+                              var contentString = '<div class="card indigo accent-4">' +
                               '<div class="card indigo accent-4"><div class="card-content white-text">' +
                               '<span class="card-action"><ul>' +
                               '<li><b>Poste: </b>' + data.data.id.toString() + '</li>' +
-                              '<li><b>Corrente: </b>' + resources.resources["0"].capabilities.lightpole_monitoring["1"].current.toString() + '</li>' +
+                              '<li><b>Corrente: </b>' + resources.resources["0"].capabilities.lightpole_monitoring[last.toString()].current.toString() + '</li>' +
                               '<li><div class="divider"></div></li>' +
                               '<li><b>Data: </b>' + date.getDate().toString() + '/' + (date.getMonth()+1).toString() + '/' +  date.getFullYear().toString() + '</li>' +
                               '<li><b>Hora: </b>' + date.getHours().toString() + ':' + date.getMinutes().toString() + ':' +  date.getSeconds().toString() + '</li>' +
@@ -164,7 +173,6 @@
                         }
                       });
                     });
-
 
                     lightPole = lightPoles[1];
                     var marker_2 = new google.maps.Marker({
@@ -194,12 +202,13 @@
                               console.log(resources);
 
                               var date = new Date();
-                              var contentString = '<div class="card indigo accent-4">' +
+                              var last = resources.resources["0"].capabilities.lightpole_monitoring.length - 1;
 
+                              var contentString = '<div class="card indigo accent-4">' +
                               '<div class="card indigo accent-4"><div class="card-content white-text">' +
                               '<span class="card-action"><ul>' +
                               '<li><b>Poste: </b>' + data.data.id.toString() + '</li>' +
-                              '<li><b>Corrente: </b>' + resources.resources["0"].capabilities.lightpole_monitoring["0"].current.toString() + '</li>' +
+                              '<li><b>Corrente: </b>' + resources.resources["0"].capabilities.lightpole_monitoring[last.toString()].current.toString() + '</li>' +
                               '<li><div class="divider"></div></li>' +
                               '<li><b>Data: </b>' + date.getDate().toString() + '/' + (date.getMonth()+1).toString() + '/' +  date.getFullYear().toString() + '</li>' +
                               '<li><b>Hora: </b>' + date.getHours().toString() + ':' + date.getMinutes().toString() + ':' +  date.getSeconds().toString() + '</li>' +
@@ -208,7 +217,6 @@
                               '<li><b>Bairro: </b>' + data.data.neighborhood + '</li>' +
                               '<li><b>CEP: </b>' + data.data.postal_code + '</li>' +
                               '</ul></span></div></div>'
-
                               infowindow = new google.maps.InfoWindow({
                                 content: contentString
                               });
@@ -221,18 +229,53 @@
                       });
                     });
 
+
+                    setInterval(function(){
+
+                      $.ajax({
+                        url: 'http://143.107.45.126:30134/collector/resources/' + marker_1.id + '/data',
+                        method: 'POST',
+                        dataType: 'json',
+                        data: '{"capabilities":["lightpole_monitoring"]}',
+                        success: function(resources){
+
+                          var last = resources.resources["0"].capabilities.lightpole_monitoring.length - 1;
+                          if(resources.resources["0"].capabilities.lightpole_monitoring[last.toString()].current == 0){
+
+                            marker_1.setIcon('https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightPole_off.png');
+                          }
+                          else{
+
+                            marker_1.setIcon('https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightbulb-on.png');
+                          }
+                        }
+                      });
+
+                      $.ajax({
+                        url: 'http://143.107.45.126:30134/collector/resources/' + marker_2.id + '/data',
+                        method: 'POST',
+                        dataType: 'json',
+                        data: '{"capabilities":["lightpole_monitoring"]}',
+                        success: function(resources){
+
+                          console.log("marker_2")
+                          var last = resources.resources["0"].capabilities.lightpole_monitoring.length - 1;
+                          if(resources.resources["0"].capabilities.lightpole_monitoring[last.toString()].current == 0){
+
+                            marker_2.setIcon('https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightPole_off.png');
+                          }
+                          else{
+
+                            marker_2.setIcon('https://raw.githubusercontent.com/andreMarcosPerez/hackathonUSP_smartCity/master/website/static/image/lightbulb-on.png');
+                          }
+                        }
+                      });
+
+                    }, 5000);
+
                   }
 
                 </script>
-              </div>
-            </div>
-
-          </div>
-          <div class="col s12 l12">
-
-            <div class="card green">
-              <div class="card-content white-text">
-                <span class="card-title center"><b>Informação</b></span>
               </div>
             </div>
 
@@ -275,6 +318,24 @@
 
   <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
-  <script type="text/javascript" src="../static/javascript/index.js"></script>
+
+  <script>
+
+    $(document).ready(function(){
+
+      $('.collapsible').collapsible({
+
+        closeOnClick: false
+      });
+
+      $(".button-collapse").sideNav({
+
+        menuWidth: 300,
+        draggable: true,
+        closeOnClick: false
+      });
+    });
+
+  </script>
 
 </html>
